@@ -1,8 +1,9 @@
 # data-engg-alab-desktop
 
 A standardized VS Code [Dev Container](https://containers.dev/) image for the
-data engineering team: Python 3.12, the official dbt CLI, SQLFluff, Prettier, AWS CLI,
-and [Claude Code](https://code.claude.com/docs/en/devcontainer), all pinned to
+data engineering team: Python 3.12, the official dbt CLI, dbt Fusion (for the
+dbt VS Code extension's LSP), SQLFluff, Prettier, AWS CLI, and
+[Claude Code](https://code.claude.com/docs/en/devcontainer), all pinned to
 known-good versions and published as a single image. Opening a project in this
 container gives every engineer an identical toolchain without touching their
 host machine — only repos that opt in via `.devcontainer/` are affected;
@@ -71,6 +72,25 @@ version:
 | GitHub | `gh auth login` in the container terminal, or use VS Code's built-in GitHub auth |
 | dbt Platform | Download `dbt_cloud.yml` from dbt Platform (Account settings > Your profile > VS Code Extension > Download credentials) into `~/.dbt/` on your host, and bind-mount `~/.dbt` in your repo's `devcontainer.json` (see template) |
 | Claude Code | Run `claude` in the container terminal and follow the sign-in prompt. Your session persists across rebuilds. |
+
+### Two dbt tools, on purpose
+
+`dbt` on PATH is the official dbt CLI (self-identifies as "dbt Cloud CLI") —
+use it for day-to-day `dbt build`/`debug`/`run` against dbt Platform. A
+second, separate engine, **dbt Fusion**, is also installed — it's the only
+engine the `dbtLabsInc.dbt` VS Code extension's LSP (autocomplete, live SQL
+preview, error highlighting) actually talks to; dbt Cloud CLI and dbt-core
+aren't. They're designed to coexist, not replace one another:
+
+- `dbt` keeps resolving to dbt Cloud CLI in the terminal.
+- `dbtf` (a shell alias, terminal-only) invokes Fusion directly.
+- The VS Code extension doesn't see shell aliases — it's pointed at Fusion's
+  actual binary via the `dbt.fusionPath` setting in `devcontainer.json`.
+
+Fusion is pre-1.0 (pinned to the `stable` release channel, not an exact
+version) and Redshift support in Fusion itself is "Preview" as of writing —
+treat `dbtf` as powering editor features, not as a warehouse-execution
+guarantee. Day-to-day runs should go through `dbt`.
 
 ## Repo layout
 

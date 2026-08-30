@@ -27,7 +27,10 @@
         "AmazonWebServices.aws-toolkit-vscode",
         "esbenp.prettier-vscode",
         "eamodio.gitlens"
-      ]
+      ],
+      "settings": {
+        "dbt.fusionPath": "/home/vscode/.local/share/dbt-fusion/bin/dbt"
+      }
     }
   }
 }

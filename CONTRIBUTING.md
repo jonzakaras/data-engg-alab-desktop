@@ -40,6 +40,16 @@ from GitHub releases (no devcontainer feature exists for it). To upgrade,
 update `DBT_CLI_VERSION` in the Dockerfile, rebuild, and confirm
 `dbt --version` reports the new version.
 
+## Changing the dbt Fusion channel
+
+dbt Fusion (a separate engine from the dbt CLI above — see the README's "Two
+dbt tools, on purpose") has no semver release cadence yet, so it's pinned to
+a named release channel via `ARG DBT_FUSION_CHANNEL` (default `stable`), not
+an exact version. To pin an exact build instead, set it to a version string
+like `2.0.0-preview.212` (see `https://public.cdn.getdbt.com/fs/versions.json`
+for what's available). After rebuilding, confirm with
+`/home/vscode/.local/share/dbt-fusion/bin/dbt --version`.
+
 ## Releasing
 
 - Merging to `main` with changes under `.devcontainer/**` triggers
