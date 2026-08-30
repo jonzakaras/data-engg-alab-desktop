@@ -25,6 +25,30 @@ The image is published to GHCR at `ghcr.io/jonzakaras/alab-desktop`.
 - [VS Code](https://code.visualstudio.com/) with the
   [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
+### Trying this solo before rolling out to a team
+
+You don't need anyone else's buy-in to try this out. Publishing/building the
+image ahead of a wider rollout isn't risky — every change to `.devcontainer/**`
+is already validated by CI (hadolint + a `devcontainer build` smoke test)
+before it merges.
+
+If the image is private on GHCR (check the package's visibility under your
+GitHub account's Packages settings), authenticate Docker once:
+
+```sh
+gh auth token | docker login ghcr.io -u <your-github-username> --password-stdin
+```
+
+To trial this in one of your own repos without affecting anyone else who has
+that repo cloned: copy `templates/devcontainer.json` into
+`<your-repo>/.devcontainer/devcontainer.json` as usual, but instead of
+`git add`-ing it, add `.devcontainer/` to that repo's `.git/info/exclude` (a
+local-only ignore file — never committed, never pushed). The container works
+exactly the same for you; nobody else sees the file until you're ready. Once
+you're satisfied, remove the exclude entry and commit `.devcontainer/` for
+real — that's the point it becomes visible (as an optional "Reopen in
+Container" prompt, never forced) to the rest of the repo's collaborators.
+
 ### First-run authentication
 
 No credentials are baked into the image — each developer authenticates
