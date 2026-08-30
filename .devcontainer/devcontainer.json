@@ -29,7 +29,8 @@
         "eamodio.gitlens"
       ],
       "settings": {
-        "dbt.dbtPath": "/home/vscode/.local/share/dbt-fusion/bin/dbt"
+        "dbt.dbtPath": "/home/vscode/.local/share/dbt-fusion/bin/dbt",
+        "python.defaultInterpreterPath": "/usr/bin/python3"
       }
     }
   }
