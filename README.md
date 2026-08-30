@@ -13,10 +13,12 @@ The image is published to GHCR at `ghcr.io/jonzakaras/alab-desktop`.
 ## Using this in your own repo
 
 1. Copy [`templates/devcontainer.json`](templates/devcontainer.json) into
-   `<your-repo>/.devcontainer/devcontainer.json`.
+   `<your-repo>/.devcontainer/devcontainer.json`, and copy
+   [`templates/DESKTOP_BOOTSTRAP.md`](templates/DESKTOP_BOOTSTRAP.md) into
+   your repo too — it's the copy-paste auth checklist engineers onboarding
+   onto your repo will actually follow.
 2. Adjust the `image` tag if you want to pin a specific version instead of
-   `latest`, and add any repo-specific `mounts`/`containerEnv` (marked in the
-   template).
+   `latest`, and set `AWS_PROFILE` to your project's SSO profile name.
 3. In VS Code: **Dev Containers: Reopen in Container**.
 
 Rolling this out to a team? See
@@ -57,8 +59,11 @@ Container" prompt, never forced) to the rest of the repo's collaborators.
 
 No credentials are baked into the image — each developer authenticates
 individually once the container is running. A `bootstrap.sh` script runs
-automatically on container creation and reports what's missing, but here's the
-checklist:
+automatically on container creation and reports what's missing. For the full
+copy-paste version of this checklist (meant to be copied into a consuming
+repo for its own engineers), see
+[`templates/DESKTOP_BOOTSTRAP.md`](templates/DESKTOP_BOOTSTRAP.md); the short
+version:
 
 | Credential | How |
 |---|---|
@@ -79,6 +84,7 @@ checklist:
   init-firewall.sh          optional network-egress hardening, not enabled by default
 templates/
   devcontainer.json         snippet other repos copy into their own .devcontainer/
+  DESKTOP_BOOTSTRAP.md      copy-paste auth checklist for engineers onboarding onto a consuming repo
 docs/
   adding-a-new-ai-cli.md    the recipe for adding a second AI CLI (e.g. Codex) later
 ```
