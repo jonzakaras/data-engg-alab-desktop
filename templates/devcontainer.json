@@ -31,7 +31,6 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbt-labs.dbt",
         "sqlfluff.vscode-sqlfluff",
         "ms-python.python",
         "anthropic.claude-code",
