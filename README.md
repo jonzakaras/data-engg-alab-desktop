@@ -1,7 +1,7 @@
 # data-engg-alab-desktop
 
 A standardized VS Code [Dev Container](https://containers.dev/) image for the
-data engineering team: Python 3.12, dbt Cloud CLI, SQLFluff, Prettier, AWS CLI,
+data engineering team: Python 3.12, the official dbt CLI, SQLFluff, Prettier, AWS CLI,
 and [Claude Code](https://code.claude.com/docs/en/devcontainer), all pinned to
 known-good versions and published as a single image. Opening a project in this
 container gives every engineer an identical toolchain without touching their
@@ -64,7 +64,7 @@ checklist:
 |---|---|
 | AWS | `aws sso login --profile <name>`, or bind-mount `~/.aws` from your host in your repo's `devcontainer.json` |
 | GitHub | `gh auth login` in the container terminal, or use VS Code's built-in GitHub auth |
-| dbt Cloud | Set `DBT_CLOUD_API_TOKEN` and `DBT_CLOUD_ACCOUNT_ID` in your repo's `devcontainer.json` `containerEnv` |
+| dbt Platform | Download `dbt_cloud.yml` from dbt Platform (Account settings > Your profile > VS Code Extension > Download credentials) into `~/.dbt/` on your host, and bind-mount `~/.dbt` in your repo's `devcontainer.json` (see template) |
 | Claude Code | Run `claude` in the container terminal and follow the sign-in prompt. Your session persists across rebuilds. |
 
 ## Repo layout

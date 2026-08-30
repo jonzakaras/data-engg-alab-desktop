@@ -22,7 +22,7 @@ check_tool() {
     fi
 }
 check_tool "python3"    "python3 --version"
-check_tool "dbt-cloud"  "dbt-cloud --help"
+check_tool "dbt"        "dbt --version"
 check_tool "sqlfluff"   "sqlfluff --version"
 check_tool "aws"        "aws --version"
 check_tool "claude"     "claude --version"
@@ -44,11 +44,11 @@ else
     record "WARN" "GitHub auth" "not authenticated. Run 'gh auth login', or use VS Code's built-in GitHub auth."
 fi
 
-# --- 4. dbt Cloud env vars (warn only) ----------------------------------------
-if [[ -n "${DBT_CLOUD_API_TOKEN:-}" && -n "${DBT_CLOUD_ACCOUNT_ID:-}" ]]; then
-    record "PASS" "dbt Cloud env" "DBT_CLOUD_API_TOKEN / DBT_CLOUD_ACCOUNT_ID set"
+# --- 4. dbt Platform credentials (warn only) ----------------------------------
+if [[ -f "${HOME}/.dbt/dbt_cloud.yml" ]]; then
+    record "PASS" "dbt Platform auth" "~/.dbt/dbt_cloud.yml present"
 else
-    record "WARN" "dbt Cloud env" "DBT_CLOUD_API_TOKEN / DBT_CLOUD_ACCOUNT_ID not set. Add them to your devcontainer.json containerEnv. See README."
+    record "WARN" "dbt Platform auth" "~/.dbt/dbt_cloud.yml not found. Download it from dbt Platform (Account settings > Your profile > VS Code Extension > Download credentials) and mount ~/.dbt into the container. See README."
 fi
 
 # --- 5. Claude Code reminder (always shown) -----------------------------------

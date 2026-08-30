@@ -18,6 +18,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "dbtLabsInc.dbt",
         "sqlfluff.vscode-sqlfluff",
         "ms-python.python",
         "ms-python.vscode-pylance",
