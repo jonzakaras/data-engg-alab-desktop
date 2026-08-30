@@ -15,7 +15,6 @@
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
 
     // --- Add your repo-specific env here, e.g.: ---
-    // "DBT_CLOUD_ACCOUNT_ID": "12345",
     // "AWS_PROFILE": "your-profile"
   },
 
@@ -24,6 +23,7 @@
 
     // --- Add your repo-specific mounts here, e.g.: ---
     // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly"
+    // "source=${localEnv:HOME}/.dbt,target=/home/vscode/.dbt,type=bind" (for dbt_cloud.yml; read-write so `dbt init` can write profiles.yml)
   ],
 
   "postCreateCommand": "bash /usr/local/share/alab-desktop/bootstrap.sh",
@@ -31,6 +31,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "dbtLabsInc.dbt",
         "sqlfluff.vscode-sqlfluff",
         "ms-python.python",
         "anthropic.claude-code",

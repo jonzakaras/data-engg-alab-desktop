@@ -31,6 +31,15 @@ always-latest devcontainer feature, so builds stay reproducible. To upgrade:
    [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json).
 3. Rebuild locally and confirm `claude --version` reports the new version.
 
+## Bumping the dbt CLI version
+
+The official dbt CLI ([github.com/dbt-labs/dbt-cli](https://github.com/dbt-labs/dbt-cli))
+is pinned via `ARG DBT_CLI_VERSION` in
+[`.devcontainer/Dockerfile`](.devcontainer/Dockerfile), downloaded directly
+from GitHub releases (no devcontainer feature exists for it). To upgrade,
+update `DBT_CLI_VERSION` in the Dockerfile, rebuild, and confirm
+`dbt --version` reports the new version.
+
 ## Releasing
 
 - Merging to `main` with changes under `.devcontainer/**` triggers

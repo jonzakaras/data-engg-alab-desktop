@@ -30,7 +30,7 @@ To create and share one:
 2. With that profile active, install the extensions this desktop expects:
    `ms-vscode-remote.remote-containers` (Dev Containers — required to use this
    at all), plus the same list from `devcontainer.json`'s
-   `customizations.vscode.extensions`: `sqlfluff.vscode-sqlfluff`,
+   `customizations.vscode.extensions`: `dbtLabsInc.dbt`, `sqlfluff.vscode-sqlfluff`,
    `ms-python.python`, `anthropic.claude-code`, `GitHub.vscode-pull-request-github`,
    `AmazonWebServices.aws-toolkit-vscode`, `esbenp.prettier-vscode`.
 3. Command Palette → **Profiles: Export Profile** → export to a GitHub Gist.
@@ -64,19 +64,5 @@ editor or container setup. dbt's own file scanning is limited to the paths
 declared in `dbt_project.yml` (`model-paths`, `seed-paths`, etc.), so adding
 `.devcontainer/` or anything else at the repo root doesn't interfere with it.
 The devcontainer only changes the *local development* experience: what tools
-a developer has available when editing and running `dbt-cloud-cli` commands
-against the same dbt Cloud project.
-
-## No dbt VS Code extension ships by default
-
-The base image installs `dbt-cloud-cli` (for triggering/managing dbt Cloud
-jobs remotely), not dbt Core or the dbt Fusion engine. Neither the official
-`dbtLabsInc.dbt` extension (requires Fusion) nor most dbt-core-oriented
-extensions work against `dbt-cloud-cli` alone, so none is bundled — shipping
-one that silently doesn't function is worse than shipping none.
-
-If a repo's local dev workflow actually runs models against the warehouse
-directly (dbt Fusion or dbt Core, not just triggering Cloud jobs), add the
-relevant CLI and its matching VS Code extension in **that repo's own**
-`devcontainer.json` — `customizations.vscode.extensions` merges with this
-image's list, so nothing here needs to change.
+a developer has available when editing and running `dbt` commands against the
+same dbt Platform project.

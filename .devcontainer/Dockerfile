@@ -5,9 +5,10 @@ FROM mcr.microsoft.com/devcontainers/base:noble
 
 ARG CLAUDE_CODE_VERSION=2.0.1
 ARG NODE_VERSION=20
+ARG DBT_CLI_VERSION=0.40.23
 # Set automatically by buildx for each platform in a multi-arch build
 # (linux/amd64 -> amd64, linux/arm64 -> arm64) — used below to pick the right
-# AWS CLI installer.
+# AWS CLI / dbt CLI installer.
 ARG TARGETARCH
 
 # --- OS packages (rarely change) --------------------------------------------
@@ -44,6 +45,18 @@ RUN case "${TARGETARCH}" in \
     && /tmp/aws/install \
     && rm -rf /tmp/aws /tmp/awscliv2.zip
 
+# --- dbt CLI (official dbt Labs binary, for the dbt platform) ---------------
+# This is dbt Labs' own CLI (github.com/dbt-labs/dbt-cli) — connects to dbt
+# Platform via a ~/.dbt/dbt_cloud.yml credentials file and runs models
+# locally (dbt build/run/debug/parse). Distinct from the third-party PyPI
+# package literally named "dbt-cloud-cli", which is API-only account/job
+# management and was removed in favor of this. TARGETARCH's amd64/arm64
+# naming matches this release's asset names directly, unlike AWS CLI above.
+RUN curl -sSL "https://github.com/dbt-labs/dbt-cli/releases/download/v${DBT_CLI_VERSION}/dbt_${DBT_CLI_VERSION}_linux_${TARGETARCH}.tar.gz" -o /tmp/dbt-cli.tar.gz \
+    && tar -xzf /tmp/dbt-cli.tar.gz -C /usr/local/bin dbt \
+    && chmod +x /usr/local/bin/dbt \
+    && rm -f /tmp/dbt-cli.tar.gz
+
 # --- Node.js (required by Claude Code, and later Codex) ---------------------
 RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
@@ -78,11 +91,11 @@ RUN echo '[ -f /usr/local/share/alab-desktop/bash-prompt.sh ] && source /usr/loc
         >> /home/vscode/.bashrc
 
 # --- Python CLI tools via pipx ------------------------------------------------
-# pipx isolates each tool's dependencies (no conflicts between dbt-cloud-cli and
-# sqlfluff) and needs no venv activation to run `dbt`/`sqlfluff` as commands.
-# Installed as `vscode` (not root) since pipx installs into the invoking user's
-# home directory — PATH is set explicitly rather than relying on `pipx ensurepath`
-# editing shell rc files, which non-interactive shells (postCreateCommand, CI) won't source.
+# pipx isolates the tool's dependencies and needs no venv activation to run
+# `sqlfluff` as a command. Installed as `vscode` (not root) since pipx
+# installs into the invoking user's home directory — PATH is set explicitly
+# rather than relying on `pipx ensurepath` editing shell rc files, which
+# non-interactive shells (postCreateCommand, CI) won't source.
 USER vscode
 ENV PATH="/home/vscode/.local/bin:${PATH}"
 
@@ -93,7 +106,10 @@ ENV PATH="/home/vscode/.local/bin:${PATH}"
 # `vscode` user would get EACCES writing ~/.claude/.claude.json.
 RUN mkdir -p /home/vscode/.claude
 
-RUN pipx install dbt-cloud-cli \
-    && pipx install sqlfluff
+# Same reasoning for ~/.dbt: dbt_cloud.yml gets mounted/written there, and it
+# needs to exist here owned by vscode before that happens.
+RUN mkdir -p /home/vscode/.dbt
+
+RUN pipx install sqlfluff
 
 WORKDIR /workspace
