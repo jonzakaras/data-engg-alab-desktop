@@ -75,6 +75,7 @@ checklist:
   devcontainer.json        this repo's own dev container (dogfoods the image)
   managed-settings.json     baseline Claude Code org policy
   bootstrap.sh              first-run tool/auth check (postCreateCommand)
+  bash-prompt.sh            branch-aware "alab-desktop (branch) $" shell prompt
   init-firewall.sh          optional network-egress hardening, not enabled by default
 templates/
   devcontainer.json         snippet other repos copy into their own .devcontainer/
