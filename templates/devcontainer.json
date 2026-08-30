@@ -1,6 +1,7 @@
-// Copy this file to <your-repo>/.devcontainer/devcontainer.json and adjust the
-// marked sections for your repo. See the alab-desktop README for the full
-// first-run auth checklist (AWS, GitHub, dbt Cloud, Claude Code).
+// Copy this file to <your-repo>/.devcontainer/devcontainer.json, and copy
+// DESKTOP_BOOTSTRAP.md into your repo too — it's the copy-paste auth guide
+// for engineers onboarding onto this desktop. Set AWS_PROFILE below to your
+// SSO profile name; everything else works as-is.
 {
   "name": "alab-desktop",
 
@@ -12,18 +13,18 @@
 
   "containerEnv": {
     "DISABLE_AUTOUPDATER": "1",
-    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
-
-    // --- Add your repo-specific env here, e.g.: ---
-    // "AWS_PROFILE": "your-profile"
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+    "AWS_PROFILE": "<your-sso-profile-name>"
   },
 
+  // Mounts your host's ~/.aws and ~/.dbt into the container (read-write, so
+  // `aws sso login`/`dbt init` can refresh them from inside the container
+  // too, not just the host) — see DESKTOP_BOOTSTRAP.md for the one-time
+  // host-side setup each of these expects.
   "mounts": [
-    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
-
-    // --- Add your repo-specific mounts here, e.g.: ---
-    // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly"
-    // "source=${localEnv:HOME}/.dbt,target=/home/vscode/.dbt,type=bind" (for dbt_cloud.yml; read-write so `dbt init` can write profiles.yml)
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
+    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind",
+    "source=${localEnv:HOME}/.dbt,target=/home/vscode/.dbt,type=bind"
   ],
 
   "postCreateCommand": "bash /usr/local/share/alab-desktop/bootstrap.sh",
