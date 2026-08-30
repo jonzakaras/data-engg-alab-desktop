@@ -2,7 +2,8 @@
 
 A standardized VS Code [Dev Container](https://containers.dev/) image for the
 data engineering team: Python 3.12, the official dbt CLI, dbt Fusion (for the
-dbt VS Code extension's LSP), SQLFluff, Prettier, AWS CLI, and
+dbt VS Code extension's LSP), SQLFluff, Prettier, AWS CLI, `uv`/`uvx`
+(for tools like `dbt-autofix` that expect it), and
 [Claude Code](https://code.claude.com/docs/en/devcontainer), all pinned to
 known-good versions and published as a single image. Opening a project in this
 container gives every engineer an identical toolchain without touching their

@@ -50,6 +50,14 @@ like `2.0.0-preview.212` (see `https://public.cdn.getdbt.com/fs/versions.json`
 for what's available). After rebuilding, confirm with
 `/home/vscode/.local/share/dbt-fusion/bin/dbt --version`.
 
+## Bumping the uv version
+
+`uv`/`uvx` ([astral.sh/uv](https://astral.sh/uv)) is pinned via `ARG UV_VERSION`
+in the Dockerfile, installed via Astral's own versioned install script
+(`astral.sh/uv/<version>/install.sh`) rather than a devcontainer feature. To
+upgrade, update `UV_VERSION`, rebuild, and confirm `uv --version` reports the
+new version.
+
 ## Releasing
 
 - Merging to `main` with changes under `.devcontainer/**` triggers

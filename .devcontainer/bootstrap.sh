@@ -32,6 +32,7 @@ check_tool "claude"     "claude --version"
 check_tool "node"       "node --version"
 check_tool "gh"         "gh --version"
 check_tool "prettier"   "prettier --version"
+check_tool "uv"         "uv --version"
 
 # --- 2. AWS auth (warn only) --------------------------------------------------
 if aws sts get-caller-identity >/dev/null 2>&1; then

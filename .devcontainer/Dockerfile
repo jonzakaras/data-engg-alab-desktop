@@ -10,6 +10,7 @@ ARG DBT_CLI_VERSION=0.40.23
 # builds) — pinned to a named release channel, not an exact build. See the
 # Fusion install step below for what this actually does.
 ARG DBT_FUSION_CHANNEL=stable
+ARG UV_VERSION=0.12.7
 # Set automatically by buildx for each platform in a multi-arch build
 # (linux/amd64 -> amd64, linux/arm64 -> arm64) — used below to pick the right
 # AWS CLI / dbt CLI installer.
@@ -147,5 +148,15 @@ RUN pipx install sqlfluff
 RUN export SHELL=/bin/bash \
     && curl -fsSL https://public.cdn.getdbt.com/fs/install/install.sh \
         | sh -s -- --version ${DBT_FUSION_CHANNEL} --to /home/vscode/.local/share/dbt-fusion/bin
+
+# --- uv (Astral's Python tool runner) ----------------------------------------
+# Required by dbt-autofix (dbt Labs' official pre-Fusion-migration project
+# linter/fixer, run via `uvx dbt-autofix ...`) and other modern Python CLIs
+# distributed for uv/uvx use rather than pip. Same $SHELL-unset workaround as
+# the Fusion installer above; UV_INSTALL_DIR pins it to the same directory
+# convention as pipx/sqlfluff rather than uv's own default (~/.cargo/bin).
+RUN export SHELL=/bin/bash \
+    && curl -fsSL https://astral.sh/uv/${UV_VERSION}/install.sh \
+        | env UV_INSTALL_DIR=/home/vscode/.local/bin sh
 
 WORKDIR /workspace
