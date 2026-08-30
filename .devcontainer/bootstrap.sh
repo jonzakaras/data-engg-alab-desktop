@@ -22,7 +22,7 @@ check_tool() {
     fi
 }
 check_tool "python3"    "python3 --version"
-check_tool "dbt"        "dbt --version"
+check_tool "dbt-cloud"  "dbt-cloud --help"
 check_tool "sqlfluff"   "sqlfluff --version"
 check_tool "aws"        "aws --version"
 check_tool "claude"     "claude --version"
