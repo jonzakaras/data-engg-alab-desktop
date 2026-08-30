@@ -129,9 +129,10 @@ RUN pipx install sqlfluff
 #   - The installer wires a `dbtf` alias into ~/.bashrc for invoking Fusion
 #     explicitly from a terminal.
 #   - The VS Code extension doesn't see shell aliases (it spawns the binary
-#     directly), so `dbt.fusionPath` is set explicitly in devcontainer.json
-#     to this same install path — that's the setting that actually matters
-#     for the extension.
+#     directly), so `dbt.dbtPath` is set explicitly in devcontainer.json to
+#     this same install path — without it, the extension falls back to
+#     "standard locations" (PATH), finds dbt Cloud CLI first, and errors
+#     with "The dbt Fusion engine is required for this command."
 # Current releases ship a single ~250MB unified binary (CLI + language
 # server in one) — there's no separate dbt-lsp file to install alongside it.
 # jq (installed above) is a hard dependency of this installer script;

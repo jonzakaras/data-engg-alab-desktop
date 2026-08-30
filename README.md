@@ -85,7 +85,7 @@ aren't. They're designed to coexist, not replace one another:
 - `dbt` keeps resolving to dbt Cloud CLI in the terminal.
 - `dbtf` (a shell alias, terminal-only) invokes Fusion directly.
 - The VS Code extension doesn't see shell aliases — it's pointed at Fusion's
-  actual binary via the `dbt.fusionPath` setting in `devcontainer.json`.
+  actual binary via the `dbt.dbtPath` setting in `devcontainer.json`.
 
 Fusion is pre-1.0 (pinned to the `stable` release channel, not an exact
 version) and Redshift support in Fusion itself is "Preview" as of writing —
