@@ -70,6 +70,13 @@ COPY managed-settings.json /etc/claude-code/managed-settings.json
 COPY bootstrap.sh /usr/local/share/alab-desktop/bootstrap.sh
 RUN chmod +x /usr/local/share/alab-desktop/bootstrap.sh
 
+# --- Shell prompt -------------------------------------------------------------
+# Tags the terminal as "alab-desktop (<branch>) $" so it's obvious you're in
+# the standardized container, regardless of which repo you're working in.
+COPY bash-prompt.sh /usr/local/share/alab-desktop/bash-prompt.sh
+RUN echo '[ -f /usr/local/share/alab-desktop/bash-prompt.sh ] && source /usr/local/share/alab-desktop/bash-prompt.sh' \
+        >> /home/vscode/.bashrc
+
 # --- Python CLI tools via pipx ------------------------------------------------
 # pipx isolates each tool's dependencies (no conflicts between dbt-cloud-cli and
 # sqlfluff) and needs no venv activation to run `dbt`/`sqlfluff` as commands.
