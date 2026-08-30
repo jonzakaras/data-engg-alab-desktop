@@ -16,6 +16,40 @@ container just reads/writes it directly.
 - [VS Code](https://code.visualstudio.com/) with the
   [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
+### Mac
+
+No extra setup — Docker Desktop for Mac works as-is with everything below.
+
+### Windows
+
+**Use WSL2.** This isn't optional polish — Microsoft's own Dev Containers
+performance guidance is explicit that source code on the Windows filesystem
+is significantly slower than inside WSL2, and the `~/.aws`/`~/.dbt` mounts
+below are written assuming a Unix-style host home directory.
+
+*(Note: the following is based on Microsoft/Docker's published guidance, not
+something verified hands-on against a real Windows machine in building this
+desktop — if you hit something that doesn't match, please report it back so
+this doc can be corrected.)*
+
+1. Install WSL2 (`wsl --install` from an admin PowerShell) with a Linux
+   distro, e.g. Ubuntu.
+2. In Docker Desktop → Settings → General, confirm "Use the WSL 2 based
+   engine" is on. Under Resources → WSL Integration, enable it for your
+   distro.
+3. Install the [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)
+   for VS Code, alongside Dev Containers.
+4. **Clone this repo inside the WSL2 filesystem** (e.g. `~/repos/...` from
+   an Ubuntu terminal), not on a Windows drive (`/mnt/c/...`).
+5. From that WSL terminal, run `code .` to open the folder — VS Code
+   connects to WSL first, then "Reopen in Container" (step 2 below) layers
+   the container on top of that, same as it would on Mac/Linux.
+
+Doing it this way means your WSL2 environment has `HOME` set like a normal
+Linux/Mac shell, so every command below works unmodified. Skipping WSL2 and
+opening the repo directly from a Windows folder is not the supported path
+for this desktop.
+
 ## 2. Open the repo in the container
 
 Clone this repo, open it in VS Code, then Command Palette →
