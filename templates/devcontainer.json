@@ -21,10 +21,16 @@
   // `aws sso login`/`dbt init` can refresh them from inside the container
   // too, not just the host) — see DESKTOP_BOOTSTRAP.md for the one-time
   // host-side setup each of these expects.
+  //
+  // ${localEnv:HOME}${localEnv:USERPROFILE} is the devcontainer spec's own
+  // documented cross-platform pattern: HOME is set on macOS/Linux/WSL and
+  // blank on native Windows; USERPROFILE is the reverse. Concatenating both
+  // always resolves to the right one. Using just ${localEnv:HOME} breaks
+  // this mount silently on a non-WSL Windows setup.
   "mounts": [
     "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
-    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind",
-    "source=${localEnv:HOME}/.dbt,target=/home/vscode/.dbt,type=bind"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.dbt,target=/home/vscode/.dbt,type=bind"
   ],
 
   "postCreateCommand": "bash /usr/local/share/alab-desktop/bootstrap.sh",

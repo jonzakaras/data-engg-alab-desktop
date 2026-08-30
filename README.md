@@ -33,6 +33,10 @@ and an "Open in Dev Container" badge to get as close to one-click as possible.
 - [VS Code](https://code.visualstudio.com/) with the
   [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
+On Windows, use WSL2 — see the "Prerequisites" section in
+[`templates/DESKTOP_BOOTSTRAP.md`](templates/DESKTOP_BOOTSTRAP.md) for setup
+steps. No extra setup is needed on Mac.
+
 ### Trying this solo before rolling out to a team
 
 You don't need anyone else's buy-in to try this out. Publishing/building the
