@@ -29,7 +29,7 @@
         "eamodio.gitlens"
       ],
       "settings": {
-        "dbt.fusionPath": "/home/vscode/.local/share/dbt-fusion/bin/dbt"
+        "dbt.dbtPath": "/home/vscode/.local/share/dbt-fusion/bin/dbt"
       }
     }
   }
