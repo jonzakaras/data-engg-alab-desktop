@@ -23,6 +23,9 @@ check_tool() {
 }
 check_tool "python3"    "python3 --version"
 check_tool "dbt"        "dbt --version"
+# Fusion (`dbtf`) — checked by direct path, not the `dbtf` alias: aliases
+# only exist in interactive shells, and this script runs non-interactively.
+check_tool "dbtf"       "/home/vscode/.local/share/dbt-fusion/bin/dbt --version"
 check_tool "sqlfluff"   "sqlfluff --version"
 check_tool "aws"        "aws --version"
 check_tool "claude"     "claude --version"

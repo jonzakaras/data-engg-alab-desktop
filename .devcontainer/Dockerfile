@@ -6,6 +6,10 @@ FROM mcr.microsoft.com/devcontainers/base:noble
 ARG CLAUDE_CODE_VERSION=2.0.1
 ARG NODE_VERSION=20
 ARG DBT_CLI_VERSION=0.40.23
+# dbt Fusion has no semver release cadence yet (pre-1.0, frequent internal
+# builds) — pinned to a named release channel, not an exact build. See the
+# Fusion install step below for what this actually does.
+ARG DBT_FUSION_CHANNEL=stable
 # Set automatically by buildx for each platform in a multi-arch build
 # (linux/amd64 -> amd64, linux/arm64 -> arm64) — used below to pick the right
 # AWS CLI / dbt CLI installer.
@@ -18,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         ca-certificates \
         gnupg \
+        jq \
         pipx \
         python3.12 \
         python3.12-venv \
@@ -111,5 +116,35 @@ RUN mkdir -p /home/vscode/.claude
 RUN mkdir -p /home/vscode/.dbt
 
 RUN pipx install sqlfluff
+
+# --- dbt Fusion (separate engine; powers the dbtLabsInc.dbt VS Code extension) ---
+# Fusion is NOT the dbt CLI installed above — that one self-identifies as
+# "dbt Cloud CLI" and is what `dbt` on PATH resolves to for terminal runs.
+# The dbtLabsInc.dbt extension's LSP (autocomplete, live SQL preview, error
+# highlighting) only talks to Fusion; dbt Cloud CLI and dbt-core are engines
+# it doesn't speak to at all. They're designed to coexist rather than
+# replace one another:
+#   - Fusion installs to its own directory, kept off the front of PATH, so
+#     plain `dbt` in a terminal keeps resolving to dbt Cloud CLI above.
+#   - The installer wires a `dbtf` alias into ~/.bashrc for invoking Fusion
+#     explicitly from a terminal.
+#   - The VS Code extension doesn't see shell aliases (it spawns the binary
+#     directly), so `dbt.fusionPath` is set explicitly in devcontainer.json
+#     to this same install path — that's the setting that actually matters
+#     for the extension.
+# Current releases ship a single ~250MB unified binary (CLI + language
+# server in one) — there's no separate dbt-lsp file to install alongside it.
+# jq (installed above) is a hard dependency of this installer script;
+# pre-installing it via apt avoids the script fetching its own copy.
+#
+# Note: Redshift support in Fusion itself is "Preview" as of writing. This
+# only backs the VS Code extension's local LSP features, not a guarantee
+# that `dbtf` fully works against this warehouse — day-to-day runs should
+# still go through `dbt` (dbt Cloud CLI) above.
+# SHELL is exported explicitly: it's unset in a non-interactive RUN step,
+# and the installer's `set -u` mode errors on referencing it unset.
+RUN export SHELL=/bin/bash \
+    && curl -fsSL https://public.cdn.getdbt.com/fs/install/install.sh \
+        | sh -s -- --version ${DBT_FUSION_CHANNEL} --to /home/vscode/.local/share/dbt-fusion/bin
 
 WORKDIR /workspace
