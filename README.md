@@ -19,6 +19,10 @@ The image is published to GHCR at `ghcr.io/jonzakaras/alab-desktop`.
    template).
 3. In VS Code: **Dev Containers: Reopen in Container**.
 
+Rolling this out to a team? See
+[`docs/team-rollout.md`](docs/team-rollout.md) for sharing a VS Code Profile
+and an "Open in Dev Container" badge to get as close to one-click as possible.
+
 ### Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
