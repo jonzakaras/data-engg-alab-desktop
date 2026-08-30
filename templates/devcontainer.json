@@ -1,0 +1,43 @@
+// Copy this file to <your-repo>/.devcontainer/devcontainer.json and adjust the
+// marked sections for your repo. See the alab-desktop README for the full
+// first-run auth checklist (AWS, GitHub, dbt Cloud, Claude Code).
+{
+  "name": "alab-desktop",
+
+  // Bump the tag as new alab-desktop releases come out. Pin to a semver tag
+  // (e.g. "1.2.3") for stability, or use "latest" to always track main.
+  "image": "ghcr.io/jonzakaras/alab-desktop:latest",
+
+  "remoteUser": "vscode",
+
+  "containerEnv": {
+    "DISABLE_AUTOUPDATER": "1",
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+
+    // --- Add your repo-specific env here, e.g.: ---
+    // "DBT_CLOUD_ACCOUNT_ID": "12345",
+    // "AWS_PROFILE": "your-profile"
+  },
+
+  "mounts": [
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+
+    // --- Add your repo-specific mounts here, e.g.: ---
+    // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly"
+  ],
+
+  "postCreateCommand": "bash /usr/local/share/alab-desktop/bootstrap.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbt-labs.dbt",
+        "sqlfluff.vscode-sqlfluff",
+        "ms-python.python",
+        "anthropic.claude-code",
+        "GitHub.vscode-pull-request-github",
+        "AmazonWebServices.aws-toolkit-vscode"
+      ]
+    }
+  }
+}

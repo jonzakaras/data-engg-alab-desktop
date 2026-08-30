@@ -1,0 +1,35 @@
+name: Validate devcontainer
+
+on:
+  pull_request:
+    paths: [".devcontainer/**"]
+
+jobs:
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.5.0
+        with:
+          dockerfile: .devcontainer/Dockerfile
+          failure-threshold: error
+
+  build-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install devcontainer CLI
+        run: npm install -g @devcontainers/cli
+
+      - name: Build devcontainer (smoke test, no push)
+        run: devcontainer build --workspace-folder .
