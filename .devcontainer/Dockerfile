@@ -78,6 +78,14 @@ RUN chmod +x /usr/local/share/alab-desktop/bootstrap.sh
 # editing shell rc files, which non-interactive shells (postCreateCommand, CI) won't source.
 USER vscode
 ENV PATH="/home/vscode/.local/bin:${PATH}"
+
+# Pre-create the Claude Code config dir owned by `vscode` before any volume is
+# mounted here. Docker seeds a freshly-created named volume from whatever
+# already exists at the mount point in the image — if this directory didn't
+# exist here, Docker would create it itself owned by root, and the non-root
+# `vscode` user would get EACCES writing ~/.claude/.claude.json.
+RUN mkdir -p /home/vscode/.claude
+
 RUN pipx install dbt-cloud-cli \
     && pipx install sqlfluff
 
