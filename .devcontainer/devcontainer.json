@@ -25,6 +25,7 @@
         "anthropic.claude-code",
         "GitHub.vscode-pull-request-github",
         "AmazonWebServices.aws-toolkit-vscode",
+        "esbenp.prettier-vscode",
         "eamodio.gitlens"
       ]
     }
