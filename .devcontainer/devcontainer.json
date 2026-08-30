@@ -1,0 +1,32 @@
+{
+  "name": "alab-desktop (dev)",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "CLAUDE_CODE_VERSION": "2.0.1"
+    }
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "DISABLE_AUTOUPDATER": "1",
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  "mounts": [
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+  ],
+  "postCreateCommand": "bash /usr/local/share/alab-desktop/bootstrap.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbt-labs.dbt",
+        "sqlfluff.vscode-sqlfluff",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "anthropic.claude-code",
+        "GitHub.vscode-pull-request-github",
+        "AmazonWebServices.aws-toolkit-vscode",
+        "eamodio.gitlens"
+      ]
+    }
+  }
+}
