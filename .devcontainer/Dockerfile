@@ -5,6 +5,10 @@ FROM mcr.microsoft.com/devcontainers/base:noble
 
 ARG CLAUDE_CODE_VERSION=2.0.1
 ARG NODE_VERSION=20
+# Set automatically by buildx for each platform in a multi-arch build
+# (linux/amd64 -> amd64, linux/arm64 -> arm64) — used below to pick the right
+# AWS CLI installer.
+ARG TARGETARCH
 
 # --- OS packages (rarely change) --------------------------------------------
 # python3.12 is noble's native system Python — no PPA needed.
@@ -28,7 +32,14 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
     && rm -rf /var/lib/apt/lists/*
 
 # --- AWS CLI v2 (official installer — apt's package lags behind) -----------
-RUN curl -sSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip \
+# The installer URL is arch-specific (x86_64 / aarch64), unlike TARGETARCH's
+# amd64 / arm64 naming, hence the mapping below.
+RUN case "${TARGETARCH}" in \
+        amd64) AWSCLI_ARCH=x86_64 ;; \
+        arm64) AWSCLI_ARCH=aarch64 ;; \
+        *) echo "unsupported TARGETARCH: ${TARGETARCH}" >&2; exit 1 ;; \
+    esac \
+    && curl -sSL "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH}.zip" -o /tmp/awscliv2.zip \
     && unzip -q /tmp/awscliv2.zip -d /tmp \
     && /tmp/aws/install \
     && rm -rf /tmp/aws /tmp/awscliv2.zip
