@@ -1,22 +1,18 @@
-name: Build and publish image
+name: Publish semver release
 
-# Tag pushes (v*) are handled by release-publish.yml, not here: a `push`
-# trigger's `paths` filter applies to every ref it matches, tags included, so
-# combining `tags: ["v*"]` with `paths: [".devcontainer/**"]` in one trigger
-# means tagging an existing main commit (the normal release flow) often
-# wouldn't touch that path in the tag's own diff and would silently never
-# fire. Splitting into two workflows keeps this one's path filter meaningful
-# while giving tag pushes their own unfiltered trigger.
+# Deliberately no `paths` filter (see build-publish.yml's comment): this
+# trigger must fire for any v* tag regardless of what that tag's own diff
+# touches, since a release tag is normally applied to an existing main
+# commit rather than one that changes .devcontainer/** itself.
 on:
   push:
-    branches: [main]
-    paths: [".devcontainer/**"]
+    tags: ["v*"]
 
 env:
   IMAGE_NAME: ghcr.io/asu-edplus-org/alab-desktop
 
 jobs:
-  build-publish:
+  release-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -44,8 +40,9 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,prefix=sha-,format=short
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
 
       - name: Build and push
         uses: docker/build-push-action@v7

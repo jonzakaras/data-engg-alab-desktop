@@ -159,4 +159,15 @@ RUN export SHELL=/bin/bash \
     && curl -fsSL https://astral.sh/uv/${UV_VERSION}/install.sh \
         | env UV_INSTALL_DIR=/home/vscode/.local/bin sh
 
+# --- dbt MCP server (dbt Labs' official Model Context Protocol server) ------
+# Installed as a `uv tool` (persistent, `dbt-mcp` lands on PATH via the same
+# ~/.local/bin as pipx/sqlfluff above) rather than the `uvx dbt-mcp` shown in
+# most docs — that form re-resolves and can re-download on every launch,
+# which fights this image's pin-everything approach and needs network egress
+# each time an agent starts the MCP server. Connection config (DBT_HOST) is
+# set per-repo in devcontainer.json — auth itself is OAuth (browser sign-in
+# on first use), not a static token. See templates/.mcp.json.
+ARG DBT_MCP_VERSION=2.3.1
+RUN uv tool install dbt-mcp==${DBT_MCP_VERSION}
+
 WORKDIR /workspace

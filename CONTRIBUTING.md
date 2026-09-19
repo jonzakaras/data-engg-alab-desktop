@@ -58,14 +58,25 @@ in the Dockerfile, installed via Astral's own versioned install script
 upgrade, update `UV_VERSION`, rebuild, and confirm `uv --version` reports the
 new version.
 
+## Bumping the dbt MCP version
+
+[`dbt-mcp`](https://github.com/dbt-labs/dbt-mcp) (dbt Labs' official MCP
+server) is pinned via `ARG DBT_MCP_VERSION` in the Dockerfile and installed
+as a `uv tool` (not the unpinned `uvx dbt-mcp` most docs show, which
+re-resolves on every launch). To upgrade, update `DBT_MCP_VERSION`, rebuild,
+and confirm with `dbt-mcp < /dev/null` (it has no `--version` flag; see the
+comment above the matching check in `bootstrap.sh` for why stdin is closed).
+
 ## Releasing
 
 - Merging to `main` with changes under `.devcontainer/**` triggers
-  `build-publish.yml`, which builds and pushes `ghcr.io/jonzakaras/alab-desktop:latest`
+  `build-publish.yml`, which builds and pushes `ghcr.io/asu-edplus-org/alab-desktop:latest`
   plus a `sha-<short>` tag.
-- Pushing a `v*` git tag (e.g. `v1.2.3`) additionally publishes semver tags
-  (`1.2.3`, `1.2`, `1`) so consuming repos can pin to a stable version instead
-  of always tracking `latest`.
+- Pushing a `v*` git tag (e.g. `v1.2.3`) triggers the separate
+  `release-publish.yml` (not gated on `.devcontainer/**` changes, since a
+  release tag is normally applied to an existing `main` commit) and publishes
+  semver tags (`1.2.3`, `1.2`, `1`) so consuming repos can pin to a stable
+  version instead of always tracking `latest`.
 
 ## Adding a new AI CLI
 

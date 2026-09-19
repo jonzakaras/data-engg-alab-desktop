@@ -33,6 +33,11 @@ check_tool "node"       "node --version"
 check_tool "gh"         "gh --version"
 check_tool "prettier"   "prettier --version"
 check_tool "uv"         "uv --version"
+# dbt-mcp has no --version/--help flag — invoked with no args it starts an
+# MCP stdio server that blocks reading stdin indefinitely. Closing stdin here
+# makes it treat that as EOF and exit 0 immediately instead of hanging this
+# script (verified: `dbt-mcp < /dev/null` exits clean even with no config).
+check_tool "dbt-mcp"    "dbt-mcp < /dev/null"
 
 # --- 2. AWS auth (warn only) --------------------------------------------------
 if aws sts get-caller-identity >/dev/null 2>&1; then
@@ -55,7 +60,17 @@ else
     record "WARN" "dbt Platform auth" "~/.dbt/dbt_cloud.yml not found. Download it from dbt Platform (Account settings > Your profile > VS Code Extension > Download credentials) and mount ~/.dbt into the container. See README."
 fi
 
-# --- 5. Claude Code reminder (always shown) -----------------------------------
+# --- 5. dbt MCP config (warn only) --------------------------------------------
+# OAuth-based (no token to validate here) — the browser sign-in itself
+# happens on the first dbt MCP tool call inside Claude, not at bootstrap
+# time. This only catches the un-edited template placeholder.
+if [[ -z "${DBT_HOST:-}" || "${DBT_HOST:-}" == *"<your-account>"* ]]; then
+    record "WARN" "dbt MCP" "DBT_HOST not set to your account's Access URL — see README/DESKTOP_BOOTSTRAP.md."
+else
+    record "INFO" "dbt MCP" "DBT_HOST=${DBT_HOST}. First dbt MCP tool call in Claude opens a browser to sign in (session cached via the ~/.dbt mount)."
+fi
+
+# --- 6. Claude Code reminder (always shown) -----------------------------------
 record "INFO" "Claude Code" "run 'claude' to sign in — your session persists across rebuilds via the mounted volume."
 
 # --- Summary -------------------------------------------------------------------
