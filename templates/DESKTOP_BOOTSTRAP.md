@@ -2,7 +2,7 @@
 
 Copy this file into your repo alongside `devcontainer.json` (see
 `templates/devcontainer.json` in
-[data-engg-alab-desktop](https://github.com/jonzakaras/data-engg-alab-desktop))
+[data-engg-alab-desktop](https://github.com/asu-edplus-org/data-engg-alab-desktop))
 so engineers onboarding onto this repo have a single copy-paste checklist.
 
 This assumes your `devcontainer.json` mounts `~/.aws` and `~/.dbt` from your
@@ -129,12 +129,35 @@ claude
 Follow the sign-in prompt. Your session persists across rebuilds (mounted
 volume) — you only need to do this once per machine, not per repo.
 
+### dbt MCP (optional)
+
+Lets Claude Code query this project's dbt metadata, lineage, and Semantic
+Layer directly (see [`.mcp.json`](../.mcp.json) — copied into this repo
+alongside `devcontainer.json`). Skip this if you don't need that. Uses
+OAuth — no token to generate or manage.
+
+1. In dbt Platform: **Account settings → Access URL**. It looks like
+   `<account>.us1.dbt.com`. (Requires a plan with a static Access URL —
+   ask in #data-eng-tools if you don't see one.)
+2. In this repo's `.devcontainer/devcontainer.json`, set `DBT_HOST` to that
+   value.
+3. Reopen/rebuild the container.
+4. Run `claude` in the container terminal. The first time it loads this
+   repo's `.mcp.json`, it'll ask you to approve the project-scoped `dbt`
+   MCP server — approve it once. The first dbt MCP tool call after that
+   opens a browser to sign in; the session is then cached under `~/.dbt`
+   (the same host mount `dbt_cloud.yml` uses), so it persists across
+   rebuilds — you won't be prompted again on this machine. Verify with:
+   ```sh
+   claude mcp list
+   ```
+
 ## 4. You're set
 
 Run `bash /usr/local/share/alab-desktop/bootstrap.sh` one more time — every
 line should read PASS. If something still fails after following the steps
 above, check
-[data-engg-alab-desktop](https://github.com/jonzakaras/data-engg-alab-desktop)'s
+[data-engg-alab-desktop](https://github.com/asu-edplus-org/data-engg-alab-desktop)'s
 README/issues, or ask in #data-eng-tools.
 
 ## Gotcha: pulling in a newer desktop image
@@ -144,7 +167,7 @@ doesn't always re-pull `:latest` — it can silently reuse whatever's cached
 locally. If something that was recently fixed still seems broken, force it:
 
 ```sh
-docker pull ghcr.io/jonzakaras/alab-desktop:latest
+docker pull ghcr.io/asu-edplus-org/alab-desktop:latest
 ```
 
 Then **Dev Containers: Rebuild Container Without Cache** from the Command

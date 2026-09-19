@@ -7,20 +7,31 @@
 
   // Bump the tag as new alab-desktop releases come out. Pin to a semver tag
   // (e.g. "1.2.3") for stability, or use "latest" to always track main.
-  "image": "ghcr.io/jonzakaras/alab-desktop:latest",
+  "image": "ghcr.io/asu-edplus-org/alab-desktop:latest",
 
   "remoteUser": "vscode",
 
   "containerEnv": {
     "DISABLE_AUTOUPDATER": "1",
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
-    "AWS_PROFILE": "<your-sso-profile-name>"
+    "AWS_PROFILE": "<your-sso-profile-name>",
+
+    // dbt MCP (see templates/.mcp.json) connection config, via OAuth — no
+    // token to generate or export. DBT_HOST is your account's Access URL
+    // (dbt Platform: Account settings > Access URL, looks like
+    // "<account>.us1.dbt.com"), not a secret, same treatment as AWS_PROFILE
+    // above: just fill in the placeholder. The first dbt MCP tool call in
+    // Claude opens a browser to sign in; the session is cached under
+    // ~/.dbt (see the mount below), so it persists across rebuilds.
+    "DBT_HOST": "<your-account>.us1.dbt.com"
   },
 
   // Mounts your host's ~/.aws and ~/.dbt into the container (read-write, so
   // `aws sso login`/`dbt init` can refresh them from inside the container
   // too, not just the host) — see DESKTOP_BOOTSTRAP.md for the one-time
-  // host-side setup each of these expects.
+  // host-side setup each of these expects. ~/.dbt also caches the dbt MCP
+  // OAuth session (mcp.lock/mcp.yml) alongside dbt_cloud.yml, so that
+  // browser sign-in only needs to happen once per machine, not per rebuild.
   //
   // ${localEnv:HOME}${localEnv:USERPROFILE} is the devcontainer spec's own
   // documented cross-platform pattern: HOME is set on macOS/Linux/WSL and
