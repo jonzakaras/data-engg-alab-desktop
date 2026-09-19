@@ -3,7 +3,7 @@
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "CLAUDE_CODE_VERSION": "2.0.1"
+      "CLAUDE_CODE_VERSION": "2.1.278"
     }
   },
   "remoteUser": "vscode",

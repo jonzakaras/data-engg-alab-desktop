@@ -3,14 +3,17 @@
 # pinning keeps the base OS from silently jumping to a new LTS on rebuild.
 FROM mcr.microsoft.com/devcontainers/base:noble
 
-ARG CLAUDE_CODE_VERSION=2.0.1
-ARG NODE_VERSION=20
+ARG CLAUDE_CODE_VERSION=2.1.278
+# Node 22+ required by CLAUDE_CODE_VERSION above (engines.node >=22.0.0 as of
+# 2.1.x); also Node 20 (Iron) itself reached end-of-life 2026-04-30, so this
+# tracks the current Active LTS line rather than just the CLI's minimum.
+ARG NODE_VERSION=24
 ARG DBT_CLI_VERSION=0.40.23
 # dbt Fusion has no semver release cadence yet (pre-1.0, frequent internal
 # builds) — pinned to a named release channel, not an exact build. See the
 # Fusion install step below for what this actually does.
 ARG DBT_FUSION_CHANNEL=stable
-ARG UV_VERSION=0.12.7
+ARG UV_VERSION=0.12.17
 # Set automatically by buildx for each platform in a multi-arch build
 # (linux/amd64 -> amd64, linux/arm64 -> arm64) — used below to pick the right
 # AWS CLI / dbt CLI installer.
