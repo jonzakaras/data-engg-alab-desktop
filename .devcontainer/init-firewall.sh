@@ -27,6 +27,9 @@ ALLOWED_DOMAINS=(
     files.pythonhosted.org
     registry.npmjs.org
     cloud.getdbt.com
+    # dbt Platform Access URL — also serves the hosted dbt MCP endpoint
+    # (https://it114.us1.dbt.com/api/ai/v1/mcp); see templates/.mcp.json.
+    it114.us1.dbt.com
     "*.amazonaws.com"
     "*.asu.edu"
 )

@@ -14,24 +14,21 @@
   "containerEnv": {
     "DISABLE_AUTOUPDATER": "1",
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
-    "AWS_PROFILE": "<your-sso-profile-name>",
+    "AWS_PROFILE": "<your-sso-profile-name>"
 
-    // dbt MCP (see templates/.mcp.json) connection config, via OAuth — no
-    // token to generate or export. DBT_HOST is your account's Access URL
-    // (dbt Platform: Account settings > Access URL, looks like
-    // "<account>.us1.dbt.com"), not a secret, same treatment as AWS_PROFILE
-    // above: just fill in the placeholder. The first dbt MCP tool call in
-    // Claude opens a browser to sign in; the session is cached under
-    // ~/.dbt (see the mount below), so it persists across rebuilds.
-    "DBT_HOST": "<your-account>.us1.dbt.com"
+    // dbt MCP needs nothing here: it's dbt Platform's hosted MCP server,
+    // reached over HTTP at our account's Access URL and configured entirely
+    // in .mcp.json. Auth is OAuth — the first dbt MCP tool call in Claude
+    // opens a browser to sign in, and the token is cached in
+    // /home/vscode/.claude (the named volume below), so it survives rebuilds.
   },
 
   // Mounts your host's ~/.aws and ~/.dbt into the container (read-write, so
   // `aws sso login`/`dbt init` can refresh them from inside the container
   // too, not just the host) — see DESKTOP_BOOTSTRAP.md for the one-time
-  // host-side setup each of these expects. ~/.dbt also caches the dbt MCP
-  // OAuth session (mcp.lock/mcp.yml) alongside dbt_cloud.yml, so that
-  // browser sign-in only needs to happen once per machine, not per rebuild.
+  // host-side setup each of these expects. ~/.dbt is for the dbt CLI
+  // (dbt_cloud.yml); the dbt MCP server's OAuth token lives in the
+  // /home/vscode/.claude volume instead, since Claude Code owns that flow.
   //
   // ${localEnv:HOME}${localEnv:USERPROFILE} is the devcontainer spec's own
   // documented cross-platform pattern: HOME is set on macOS/Linux/WSL and

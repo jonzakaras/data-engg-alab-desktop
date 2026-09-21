@@ -4,9 +4,9 @@ A standardized VS Code [Dev Container](https://containers.dev/) image for the
 data engineering team: Python 3.12, the official dbt CLI, dbt Fusion (for the
 dbt VS Code extension's LSP), SQLFluff, Prettier, AWS CLI, `uv`/`uvx`
 (for tools like `dbt-autofix` that expect it),
-[Claude Code](https://code.claude.com/docs/en/devcontainer), and dbt Labs'
-[dbt MCP server](https://github.com/dbt-labs/dbt-mcp) (opt-in per repo — see
-[`templates/.mcp.json`](templates/.mcp.json)), all pinned to known-good
+[Claude Code](https://code.claude.com/docs/en/devcontainer), and wiring for
+dbt Labs' [dbt MCP server](https://github.com/dbt-labs/dbt-mcp) (opt-in per
+repo — see [`templates/.mcp.json`](templates/.mcp.json)), all pinned to known-good
 versions and published as a single image. Opening a project in this
 container gives every engineer an identical toolchain without touching their
 host machine — only repos that opt in via `.devcontainer/` are affected;
@@ -24,7 +24,8 @@ The image is published to GHCR at `ghcr.io/asu-edplus-org/alab-desktop`.
    MCP tools (query models/lineage/Semantic Layer directly), also copy
    [`templates/.mcp.json`](templates/.mcp.json) into `<your-repo>/.mcp.json`.
 2. Adjust the `image` tag if you want to pin a specific version instead of
-   `latest`, and set `AWS_PROFILE`/`DBT_HOST` to your project's values.
+   `latest`, and set `AWS_PROFILE` to your project's value. (`.mcp.json`
+   needs no edits — the dbt MCP URL is our account's, already filled in.)
 3. In VS Code: **Dev Containers: Reopen in Container**.
 
 Rolling this out to a team? See
@@ -81,7 +82,7 @@ version:
 | GitHub | `gh auth login` in the container terminal, or use VS Code's built-in GitHub auth |
 | dbt Platform | Download `dbt_cloud.yml` from dbt Platform (Account settings > Your profile > VS Code Extension > Download credentials) into `~/.dbt/` on your host, and bind-mount `~/.dbt` in your repo's `devcontainer.json` (see template) |
 | Claude Code | Run `claude` in the container terminal and follow the sign-in prompt. Your session persists across rebuilds. |
-| dbt MCP (optional) | OAuth, no token needed — set `DBT_HOST` to your account's Access URL in `devcontainer.json`, approve the `dbt` MCP server the first time `claude` loads it, then sign in via the browser prompt on first use. See DESKTOP_BOOTSTRAP.md. |
+| dbt MCP (optional) | Nothing to configure — `.mcp.json` already points at our hosted endpoint. Approve the `dbt` MCP server the first time `claude` loads it, then sign in via the browser prompt on first use (OAuth, no token). See DESKTOP_BOOTSTRAP.md. |
 
 ### Two dbt tools, on purpose
 
