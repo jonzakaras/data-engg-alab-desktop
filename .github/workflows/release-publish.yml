@@ -8,8 +8,10 @@ on:
   push:
     tags: ["v*"]
 
+# Must match build-publish.yml's IMAGE_NAME — see the comment there for why
+# the namespace is tied to this repo's owner.
 env:
-  IMAGE_NAME: ghcr.io/asu-edplus-org/alab-desktop
+  IMAGE_NAME: ghcr.io/jonzakaras/alab-desktop
 
 jobs:
   release-publish:

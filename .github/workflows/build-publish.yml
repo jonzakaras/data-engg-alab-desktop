@@ -7,13 +7,23 @@ name: Build and publish image
 # wouldn't touch that path in the tag's own diff and would silently never
 # fire. Splitting into two workflows keeps this one's path filter meaningful
 # while giving tag pushes their own unfiltered trigger.
+#
+# `workflow_dispatch` is the escape hatch for the cases the path filter can't
+# see: republishing after a change to this workflow itself (registry, tags,
+# build args), or re-pushing `:latest` when a previous run failed.
 on:
   push:
     branches: [main]
     paths: [".devcontainer/**"]
+  workflow_dispatch:
 
+# The namespace must match this repo's owner: Actions' GITHUB_TOKEN is scoped
+# to the owning account, so pushing to another account's namespace (e.g. an
+# org this repo doesn't live in) fails with "permission_denied: The requested
+# installation does not exist". If the repo is ever transferred to an org,
+# update this and release-publish.yml's IMAGE_NAME to match.
 env:
-  IMAGE_NAME: ghcr.io/asu-edplus-org/alab-desktop
+  IMAGE_NAME: ghcr.io/jonzakaras/alab-desktop
 
 jobs:
   build-publish:

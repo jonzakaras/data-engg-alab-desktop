@@ -12,7 +12,14 @@ container gives every engineer an identical toolchain without touching their
 host machine — only repos that opt in via `.devcontainer/` are affected;
 everything else on your laptop is untouched.
 
-The image is published to GHCR at `ghcr.io/asu-edplus-org/alab-desktop`.
+The image is published to GHCR at `ghcr.io/jonzakaras/alab-desktop`, as a
+public package — no `docker login` is needed to pull it.
+
+> The GHCR namespace has to match this repo's owner, because the publish
+> workflows authenticate with Actions' `GITHUB_TOKEN`, which is scoped to the
+> owning account. If this repo is transferred into an org, `IMAGE_NAME` in
+> both workflows and the `image` in `templates/devcontainer.json` have to move
+> with it.
 
 ## Using this in your own repo
 
@@ -49,10 +56,14 @@ image ahead of a wider rollout isn't risky — every change to `.devcontainer/**
 is already validated by CI (hadolint + a `devcontainer build` smoke test)
 before it merges.
 
-If the image is private on GHCR (check the package's visibility under your
-GitHub account's Packages settings), authenticate Docker once:
+The image is public, so there's nothing to authenticate against GHCR — a
+`docker pull` (or "Reopen in Container") works straight away. If you ever flip
+the package to private under your account's Packages settings, every consumer
+then needs a one-time `docker login`, using a token that carries the
+`read:packages` scope (a plain `gh auth login` token does **not** have it):
 
 ```sh
+gh auth refresh -h github.com -s read:packages
 gh auth token | docker login ghcr.io -u <your-github-username> --password-stdin
 ```
 

@@ -7,7 +7,7 @@
 
   // Bump the tag as new alab-desktop releases come out. Pin to a semver tag
   // (e.g. "1.2.3") for stability, or use "latest" to always track main.
-  "image": "ghcr.io/asu-edplus-org/alab-desktop:latest",
+  "image": "ghcr.io/jonzakaras/alab-desktop:latest",
 
   "remoteUser": "vscode",
 
