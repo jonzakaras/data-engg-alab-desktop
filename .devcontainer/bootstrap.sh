@@ -60,14 +60,16 @@ else
     record "WARN" "dbt Platform auth" "~/.dbt/dbt_cloud.yml not found. Download it from dbt Platform (Account settings > Your profile > VS Code Extension > Download credentials) and mount ~/.dbt into the container. See README."
 fi
 
-# --- 5. dbt MCP config (warn only) --------------------------------------------
-# OAuth-based (no token to validate here) — the browser sign-in itself
-# happens on the first dbt MCP tool call inside Claude, not at bootstrap
-# time. This only catches the un-edited template placeholder.
-if [[ -z "${DBT_HOST:-}" || "${DBT_HOST:-}" == *"<your-account>"* ]]; then
-    record "WARN" "dbt MCP" "DBT_HOST not set to your account's Access URL — see README/DESKTOP_BOOTSTRAP.md."
+# --- 5. dbt MCP config (info only) --------------------------------------------
+# dbt Platform's hosted MCP server, reached over HTTP — there's nothing in
+# the environment to validate here. Whether it's wired up at all is a
+# per-repo choice (does this repo have a .mcp.json?), and auth is OAuth, so
+# the browser sign-in happens on the first dbt MCP tool call inside Claude,
+# not at bootstrap time.
+if [[ -f "${PWD}/.mcp.json" ]] && grep -q '"dbt"' "${PWD}/.mcp.json" 2>/dev/null; then
+    record "INFO" "dbt MCP" "configured in .mcp.json. Approve the 'dbt' server when Claude first loads it; the first tool call opens a browser to sign in (token cached in ~/.claude)."
 else
-    record "INFO" "dbt MCP" "DBT_HOST=${DBT_HOST}. First dbt MCP tool call in Claude opens a browser to sign in (session cached via the ~/.dbt mount)."
+    record "INFO" "dbt MCP" "not configured in this repo (no 'dbt' server in .mcp.json). Optional — see README/DESKTOP_BOOTSTRAP.md to enable."
 fi
 
 # --- 6. Claude Code reminder (always shown) -----------------------------------

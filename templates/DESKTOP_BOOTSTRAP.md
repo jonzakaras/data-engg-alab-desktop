@@ -132,25 +132,29 @@ volume) — you only need to do this once per machine, not per repo.
 ### dbt MCP (optional)
 
 Lets Claude Code query this project's dbt metadata, lineage, and Semantic
-Layer directly (see [`.mcp.json`](../.mcp.json) — copied into this repo
-alongside `devcontainer.json`). Skip this if you don't need that. Uses
-OAuth — no token to generate or manage.
+Layer directly. This is dbt Platform's **hosted** MCP server — nothing runs
+locally and there's no token to generate. Skip this if you don't need it.
 
-1. In dbt Platform: **Account settings → Access URL**. It looks like
-   `<account>.us1.dbt.com`. (Requires a plan with a static Access URL —
-   ask in #data-eng-tools if you don't see one.)
-2. In this repo's `.devcontainer/devcontainer.json`, set `DBT_HOST` to that
-   value.
-3. Reopen/rebuild the container.
-4. Run `claude` in the container terminal. The first time it loads this
+1. Confirm [`.mcp.json`](../.mcp.json) is in this repo (copied in alongside
+   `devcontainer.json`). It already points at our account's endpoint:
+   ```json
+   { "mcpServers": { "dbt": { "type": "http", "url": "https://it114.us1.dbt.com/api/ai/v1/mcp" } } }
+   ```
+   That URL is `https://<Access URL>/api/ai/v1/mcp`, where the Access URL
+   comes from dbt Platform: **Account settings → Access URL**. `it114` is
+   our account — you shouldn't need to change it.
+2. Run `claude` in the container terminal. The first time it loads this
    repo's `.mcp.json`, it'll ask you to approve the project-scoped `dbt`
    MCP server — approve it once. The first dbt MCP tool call after that
-   opens a browser to sign in; the session is then cached under `~/.dbt`
-   (the same host mount `dbt_cloud.yml` uses), so it persists across
-   rebuilds — you won't be prompted again on this machine. Verify with:
+   opens a browser to sign in; the OAuth token is then cached in
+   `~/.claude`, which is a mounted volume, so it persists across rebuilds —
+   you won't be prompted again on this machine. Verify with:
    ```sh
    claude mcp list
    ```
+
+Your network needs to reach `it114.us1.dbt.com` — if the connection fails
+on a locked-down network, that's the domain to get allowed.
 
 ## 4. You're set
 

@@ -1,10 +1,8 @@
 {
   "mcpServers": {
     "dbt": {
-      "command": "dbt-mcp",
-      "env": {
-        "DBT_HOST": "${DBT_HOST}"
-      }
+      "type": "http",
+      "url": "https://it114.us1.dbt.com/api/ai/v1/mcp"
     }
   }
 }

@@ -67,6 +67,12 @@ re-resolves on every launch). To upgrade, update `DBT_MCP_VERSION`, rebuild,
 and confirm with `dbt-mcp < /dev/null` (it has no `--version` flag; see the
 comment above the matching check in `bootstrap.sh` for why stdin is closed).
 
+Note that [`templates/.mcp.json`](templates/.mcp.json) no longer uses this
+binary — it points Claude at dbt Platform's hosted MCP endpoint
+(`https://it114.us1.dbt.com/api/ai/v1/mcp`) over HTTP. The local server is
+still installed for repos that need its local-project tools; see the comment
+above the install in the Dockerfile.
+
 ## Releasing
 
 - Merging to `main` with changes under `.devcontainer/**` triggers

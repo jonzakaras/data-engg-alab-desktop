@@ -167,9 +167,14 @@ RUN export SHELL=/bin/bash \
 # ~/.local/bin as pipx/sqlfluff above) rather than the `uvx dbt-mcp` shown in
 # most docs — that form re-resolves and can re-download on every launch,
 # which fights this image's pin-everything approach and needs network egress
-# each time an agent starts the MCP server. Connection config (DBT_HOST) is
-# set per-repo in devcontainer.json — auth itself is OAuth (browser sign-in
-# on first use), not a static token. See templates/.mcp.json.
+# each time an agent starts the MCP server.
+#
+# Note: templates/.mcp.json no longer uses this binary — it points Claude at
+# dbt Platform's hosted MCP endpoint over HTTP instead, which needs no local
+# process and no env config. The local server stays installed because it's
+# the only one that exposes local-project tools (running dbt against the
+# checked-out project); a repo that wants those can swap .mcp.json's `dbt`
+# entry for `{"command": "dbt-mcp", "env": {"DBT_HOST": "it114.us1.dbt.com"}}`.
 ARG DBT_MCP_VERSION=2.3.1
 RUN uv tool install dbt-mcp==${DBT_MCP_VERSION}
 
