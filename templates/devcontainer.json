@@ -2,6 +2,10 @@
 // DESKTOP_BOOTSTRAP.md into your repo too — it's the copy-paste auth guide
 // for engineers onboarding onto this desktop. Set AWS_PROFILE below to your
 // SSO profile name; everything else works as-is.
+//
+// The rest of templates/ is optional: .mcp.json wires up dbt MCP, and
+// .claude/skills + CLAUDE.md give Claude Code dbt Labs' agent skills. Note
+// both are dotfiles/dot-dirs that a plain `cp templates/* ...` will skip.
 {
   "name": "alab-desktop",
 

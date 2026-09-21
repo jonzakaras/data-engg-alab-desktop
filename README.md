@@ -30,6 +30,10 @@ public package — no `docker login` is needed to pull it.
    onto your repo will actually follow. If you want Claude Code to have dbt
    MCP tools (query models/lineage/Semantic Layer directly), also copy
    [`templates/.mcp.json`](templates/.mcp.json) into `<your-repo>/.mcp.json`.
+   To give Claude Code dbt Labs' official agent skills, copy
+   [`templates/.claude/`](templates/.claude/) into `<your-repo>/.claude/` and
+   [`templates/CLAUDE.md`](templates/CLAUDE.md) into your repo root — see
+   "dbt agent skills" below.
 2. Adjust the `image` tag if you want to pin a specific version instead of
    `latest`, and set `AWS_PROFILE` to your project's value. (`.mcp.json`
    needs no edits — the dbt MCP URL is our account's, already filled in.)
@@ -114,6 +118,30 @@ version) and Redshift support in Fusion itself is "Preview" as of writing —
 treat `dbtf` as powering editor features, not as a warehouse-execution
 guarantee. Day-to-day runs should go through `dbt`.
 
+### dbt agent skills
+
+[`templates/.claude/skills/`](templates/.claude/skills/) carries dbt Labs'
+official [dbt agent skills](https://github.com/dbt-labs/dbt-agent-skills)
+(Apache-2.0) — model building, unit tests, documentation, Semantic Layer,
+Mesh, job troubleshooting. Copy the directory into a consuming repo's
+`.claude/` and Claude Code picks the skills up automatically.
+
+They're **vendored, not installed via `/plugin`**: the Claude Code plugin
+marketplace is blocked on ASU accounts. A skill is just a directory with a
+`SKILL.md`, so the plugin system isn't needed to use one. Pinning to a
+reviewed upstream commit is also the stronger posture — fixed bytes, no
+auto-updating remote fetch, and every change arrives as a PR diff.
+
+[`templates/.claude/skills/VENDORED.md`](templates/.claude/skills/VENDORED.md)
+records the pinned commit, the pre-vendoring audit (46 files, only two
+executables, both read-only), and the update procedure.
+
+One deviation worth knowing: the skills' `running-dbt-commands` assumes the
+conventional dbt binary paths, which aren't this image's (see "Two dbt tools,
+on purpose" above). Rather than patch the skills and make future updates
+conflict, [`templates/CLAUDE.md`](templates/CLAUDE.md) states the real layout
+— copy it into the consuming repo's root alongside the skills.
+
 ## Repo layout
 
 ```
@@ -128,6 +156,8 @@ templates/
   devcontainer.json         snippet other repos copy into their own .devcontainer/
   DESKTOP_BOOTSTRAP.md      copy-paste auth checklist for engineers onboarding onto a consuming repo
   .mcp.json                 optional dbt MCP server config, copied to a consuming repo's own root
+  CLAUDE.md                 project guidance stating this image's dbt binary layout
+  .claude/skills/           vendored dbt Labs agent skills (pinned; see VENDORED.md)
 docs/
   adding-a-new-ai-cli.md    the recipe for adding a second AI CLI (e.g. Codex) later
 ```
