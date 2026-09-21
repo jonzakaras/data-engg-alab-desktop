@@ -76,7 +76,7 @@ above the install in the Dockerfile.
 ## Releasing
 
 - Merging to `main` with changes under `.devcontainer/**` triggers
-  `build-publish.yml`, which builds and pushes `ghcr.io/asu-edplus-org/alab-desktop:latest`
+  `build-publish.yml`, which builds and pushes `ghcr.io/jonzakaras/alab-desktop:latest`
   plus a `sha-<short>` tag.
 - Pushing a `v*` git tag (e.g. `v1.2.3`) triggers the separate
   `release-publish.yml` (not gated on `.devcontainer/**` changes, since a

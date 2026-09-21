@@ -2,7 +2,7 @@
 
 Copy this file into your repo alongside `devcontainer.json` (see
 `templates/devcontainer.json` in
-[data-engg-alab-desktop](https://github.com/asu-edplus-org/data-engg-alab-desktop))
+[data-engg-alab-desktop](https://github.com/jonzakaras/data-engg-alab-desktop))
 so engineers onboarding onto this repo have a single copy-paste checklist.
 
 This assumes your `devcontainer.json` mounts `~/.aws` and `~/.dbt` from your
@@ -161,7 +161,7 @@ on a locked-down network, that's the domain to get allowed.
 Run `bash /usr/local/share/alab-desktop/bootstrap.sh` one more time — every
 line should read PASS. If something still fails after following the steps
 above, check
-[data-engg-alab-desktop](https://github.com/asu-edplus-org/data-engg-alab-desktop)'s
+[data-engg-alab-desktop](https://github.com/jonzakaras/data-engg-alab-desktop)'s
 README/issues, or ask in #data-eng-tools.
 
 ## Gotcha: pulling in a newer desktop image
@@ -171,7 +171,7 @@ doesn't always re-pull `:latest` — it can silently reuse whatever's cached
 locally. If something that was recently fixed still seems broken, force it:
 
 ```sh
-docker pull ghcr.io/asu-edplus-org/alab-desktop:latest
+docker pull ghcr.io/jonzakaras/alab-desktop:latest
 ```
 
 Then **Dev Containers: Rebuild Container Without Cache** from the Command
